@@ -103,44 +103,14 @@ function check_MPU(dev_addr)
 end
 
 
---temp reading
-function temp_read()
-   read_reg_MPU(65)
-   ht=string.byte(c,1)
-
-   read_reg_MPU(66)
-   lt=string.byte(c,1)
-
-   --print("tempH = "..ht)
-   --print("tempL = "..lt)
-   rawt=bit.lshift(ht, 8) + lt
-   --print("rawt = "..rawt)
-
-   if rawt>32768 then
-     t = rawt-32768
-     temp = (t-32768)/340+36.53
-   else 
-     t = rawt
-     temp = t/340+36.53
-   end
-   
-   --print("t = "..t)
-   --print("temp = "..temp)
-   print(string.format("%.2f deg C\n",temp))
-   return temp
-end
-
-
 
 ---test program
 init_I2C()
 check_MPU(0x68)
 init_MPU(0x6B,0)
 
-temp_read()
 read_MPU_raw()
 
 tmr.alarm(0, 1000, 1, function() read_MPU_raw() end)
 tmr.stop(0)
-tmr.alarm(0, 1000, 1, function() temp_read() end)
 -------------
