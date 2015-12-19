@@ -21,18 +21,12 @@
 --
 --------------------------------------------------------------------------------
 
-
 dev_addr = 0x68 --104
 bus = 0
-
 sda, scl = 2, 1
    
-      
-
 function init_I2C()
-  i2c.setup(bus, sda, scl, i2c.SLOW)
-
-      
+  i2c.setup(bus, sda, scl, i2c.SLOW)    
 end
 
 function init_MPU(reg,val)  --(107) 0x6B / 0
@@ -41,62 +35,35 @@ end
 
 function write_reg_MPU(reg,val)
   i2c.start(bus)
-      
   i2c.address(bus, dev_addr, i2c.TRANSMITTER)
-      
   i2c.write(bus, reg)
-
-
   i2c.write(bus, val)
   i2c.stop(bus)
-
- 
 end
 
 function read_reg_MPU(reg)
-  i2c.start(bus)
- 
+  i2c.start(bus) 
   i2c.address(bus, dev_addr, i2c.TRANSMITTER)
-      
   i2c.write(bus, reg)
-
   i2c.stop(bus)
-
-   
   i2c.start(bus)
-
   i2c.address(bus, dev_addr, i2c.RECEIVER)
-      
   c=i2c.read(bus, 1)
-      
   i2c.stop(bus)
-
-      
   --print(string.byte(c, 1))
   return c
 end
 
 function read_MPU_raw()
   i2c.start(bus)
- 
   i2c.address(bus, dev_addr, i2c.TRANSMITTER)
-      
   i2c.write(bus, 59)
-
   i2c.stop(bus)
-
-  
   i2c.start(bus)
-  
   i2c.address(bus, dev_addr, i2c.RECEIVER)
-      
   c=i2c.read(bus, 14)
-      
   i2c.stop(bus)
-
-      
- 
-
+  
   Ax=bit.lshift(string.byte(c, 1), 8) + string.byte(c, 2)
   Ay=bit.lshift(string.byte(c, 3), 8) + string.byte(c, 4)
   Az=bit.lshift(string.byte(c, 5), 8) + string.byte(c, 6)
@@ -109,8 +76,6 @@ function read_MPU_raw()
   print("\nTempH: "..string.byte(c, 7).." TempL: "..string.byte(c, 8).."\n")
 
   return c, Ax, Ay, Az, Gx, Gy, Gz
-
-
 end
 
 function status_MPU(dev_addr)
@@ -158,7 +123,7 @@ function temp_read()
      t = rawt
      temp = t/340+36.53
    end
-
+   
    --print("t = "..t)
    --print("temp = "..temp)
    print(string.format("%.2f deg C\n",temp))
@@ -178,8 +143,4 @@ read_MPU_raw()
 tmr.alarm(0, 1000, 1, function() read_MPU_raw() end)
 tmr.stop(0)
 tmr.alarm(0, 1000, 1, function() temp_read() end)
-
-
-
-
 -------------
