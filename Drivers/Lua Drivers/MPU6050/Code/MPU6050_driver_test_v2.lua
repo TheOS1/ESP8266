@@ -23,7 +23,7 @@
 
 dev_addr = 0x68 --104
 bus = 0
-sda, scl = 2, 1
+sda, scl = 2, 1   -- My GY-521 did not work at 6,5, but did work at 7,6
    
 function init_I2C()
   i2c.setup(bus, sda, scl, i2c.SLOW)    
